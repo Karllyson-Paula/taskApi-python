@@ -17,32 +17,32 @@ Execute os comandos a partir da pasta raiz do projeto.
 
 Crie e ative um ambiente virtual:
 
-```bash
+```
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
 No Windows PowerShell, ative-o com:
 
-```powershell
+```
 .venv\Scripts\Activate.ps1
 ```
 
 Instale as dependências:
 
-```bash
-pip install Flask Flask-JWT-Extended python-dotenv
+```
+pip install -r requirements.txt
 ```
 
 Crie um arquivo `.env` na raiz do projeto:
 
-```env
+```
 JWT_SECRET_KEY=coloque_sua_chave_secreta_aqui
 ```
 
 Gere uma chave aleatória localmente e use o resultado no lugar do texto de exemplo:
 
-```bash
+```
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
@@ -50,7 +50,7 @@ Não compartilhe nem envie o `.env` ao Git. O arquivo está listado no `.gitigno
 
 Inicie a API:
 
-```bash
+```
 python api/App.py
 ```
 
@@ -65,7 +65,7 @@ Cadastro e login são públicos. As rotas de tarefas exigem um token JWT.
 3. Copie `user.access_token` da resposta.
 4. Envie o token nas requisições protegidas:
 
-```http
+```
 Authorization: Bearer SEU_ACCESS_TOKEN
 ```
 
@@ -73,22 +73,22 @@ No Postman, selecione **Authorization → Bearer Token** e cole o token no campo
 
 ## Endpoints
 
-| Método | Rota | Autenticação | Descrição |
-|---|---|---|---|
-| GET | `/` | Não | Retorna uma mensagem simples da API |
-| POST | `/auth/register` | Não | Cadastra um usuário |
-| POST | `/auth/login` | Não | Verifica as credenciais e retorna um token |
-| POST | `/tasks` | Sim | Cria uma tarefa para o usuário autenticado |
-| GET | `/tasks` | Sim | Lista as tarefas do usuário autenticado |
-| GET | `/tasks/<task_id>` | Sim | Busca uma tarefa do usuário pelo ID |
-| PATCH | `/tasks/<task_id>` | Sim | Atualiza parcialmente uma tarefa do usuário |
-| DELETE | `/tasks/<task_id>` | Sim | Exclui uma tarefa do usuário |
+| Método | Rota               | Autenticação | Descrição                                   |
+| ------ | ------------------ | ------------ | ------------------------------------------- |
+| GET    | `/`                | Não          | Retorna uma mensagem simples da API         |
+| POST   | `/auth/register`   | Não          | Cadastra um usuário                         |
+| POST   | `/auth/login`      | Não          | Verifica as credenciais e retorna um token  |
+| POST   | `/tasks`           | Sim          | Cria uma tarefa para o usuário autenticado  |
+| GET    | `/tasks`           | Sim          | Lista as tarefas do usuário autenticado     |
+| GET    | `/tasks/<task_id>` | Sim          | Busca uma tarefa do usuário pelo ID         |
+| PATCH  | `/tasks/<task_id>` | Sim          | Atualiza parcialmente uma tarefa do usuário |
+| DELETE | `/tasks/<task_id>` | Sim          | Exclui uma tarefa do usuário                |
 
 ### Cadastro
 
 `POST /auth/register`
 
-```json
+```
 {
   "name": "Ana",
   "email": "ana@example.com",
@@ -102,7 +102,7 @@ Retorna `201 Created`. O e-mail já cadastrado retorna `409 Conflict`; dados aus
 
 `POST /auth/login`
 
-```json
+```
 {
   "email": "ana@example.com",
   "password": "uma-senha"
@@ -115,7 +115,7 @@ Retorna `200 OK` com os dados do usuário e `access_token`. Credenciais inválid
 
 `POST /tasks` — requer token.
 
-```json
+```
 {
   "title": "Estudar Flask",
   "description": "Conectar a API ao SQLite"
@@ -135,7 +135,7 @@ Se a tarefa não existir ou pertencer a outro usuário, a API retorna `404 Not F
 
 `PATCH /tasks/1` — requer token. Envie apenas os campos que deseja alterar:
 
-```json
+```
 {
   "completed": true
 }
@@ -149,13 +149,14 @@ Campos aceitos: `title` (texto não vazio), `description` (texto ou `null`) e `c
 
 ## Estrutura
 
-```text
+```
 api/
-  App.py       # aplicação Flask e rotas
-  database.py  # conexão SQLite e criação das tabelas
+  App.py            # aplicação Flask e rotas
+  database.py       # conexão SQLite e criação das tabelas
 models/
-  task.py      # reservado para modelos
-tasks.db       # criado localmente na primeira execução
+  task.py           # reservado para modelos
+requirements.txt    # dependências com versões fixas
+tasks.db            # criado localmente na primeira execução
 ```
 
 ## Observações
